@@ -7,52 +7,113 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link href="https://vjs.zencdn.net/7.6.0/video-js.css" rel="stylesheet">
-
+    <script src='https://vjs.zencdn.net/7.6.0/video.js'></script>
     <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
-    <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
+    <!-- <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script> -->
+
+    <style>
+        #screenshots_wrapper>div {
+            position: relative;
+            display: inline-block;
+        }
+
+        #screenshots_wrapper>div>canvas {
+            position: relative;
+            display: block;
+        }
+
+        #screenshots_wrapper>div>div {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            background-color: rgba(85, 150, 78, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-in-out;
+
+        }
+
+        #screenshots_wrapper>div>div>a {
+            color: white;
+            font-size: 2rem;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        #screenshots_wrapper>div:hover>div {
+
+            opacity: 1;
+
+        }
+    </style>
 
 </head>
 
 <body>
-    <video id='my-video' class='video-js' controls preload='auto' width='640' height='' data-setup='{}'>
+    <video id='my-video' class='video-js' controls autoplay preload='auto' width='640' height='' data-setup='{}'>
         <source src="http://184.72.239.149/vod/smil:BigBuckBunny.smil/playlist.m3u8" type="application/x-mpegURL">
-
     </video>
+    <button class="btn btn-info" id="btn_screeshot">Capture</button>
 
-    <script src='https://vjs.zencdn.net/7.6.0/video.js'></script>
-    <button id="btn">Test</button>
+    <div id="screenshots_wrapper" class="w-100">
+        <h3 class="text-center">Screenshots</h3>
+        <div>
+            <canvas width="100px" height="100px"></canvas>
+            <div>Download</div>
+        </div>
+    </div>
 
-    <canvas>
 
-    </canvas>
+
     <script>
         const video = document.querySelector('video');
-        const canvas = document.querySelector('canvas');
-        const context = canvas.getContext('2d');
-        const btn = document.querySelector('#btn');
+        const player = videojs('my-video');
+        const btn = document.querySelector('#btn_screeshot');
+        const screenshotWrapper = document.querySelector('#screenshots_wrapper');
 
-        let w, h, ratio;
+        let w, h;
 
         video.addEventListener('loadedmetadata', () => {
-            ratio = video.videoWidth / video.videoHeight;
-            w = video.videoWidth - 100;
-            h = parseInt(w / ratio, 10);
-            canvas.width = w;
-            canvas.height = h;
+            h = video.videoHeight / 2;
+            w = video.videoWidth / 2;
+            btn.addEventListener('click', () => {
+                snap();
+            });
         })
 
-
         function snap() {
+            const download_link = document.createElement('a');
+            download_link.innerText = "Download";
+
+            const wrapper = document.createElement('div');
+            const blink = document.createElement('div');
+            blink.appendChild(download_link);
+
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+
+            canvas.width = w;
+            canvas.height = h;
+
             context.fillRect(0, 0, w, h);
             context.drawImage(video, 0, 0, w, h);
+
+            download_link.addEventListener('click', () => {
+                const data = canvas.toDataURL('image/png');
+                download_link.download = `canvas_${player.currentTime()}.png`;
+                download_link.href = data;
+            });
+
+            wrapper.appendChild(canvas);
+            wrapper.appendChild(blink);
+            screenshotWrapper.appendChild(wrapper);
         }
-
-        btn.addEventListener('click', () => {
-            snap();
-        });
-
     </script>
 
 </html>
