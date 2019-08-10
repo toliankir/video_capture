@@ -5,14 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Video capture</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link href="https://vjs.zencdn.net/7.6.0/video-js.css" rel="stylesheet">
     <script src='https://vjs.zencdn.net/7.6.0/video.js'></script>
     <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
     <!-- <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script> -->
-
     <style>
         #screenshots_wrapper>div {
             position: relative;
@@ -47,9 +46,7 @@
         }
 
         #screenshots_wrapper>div:hover>div {
-
             opacity: 1;
-
         }
     </style>
 
@@ -63,13 +60,7 @@
 
     <div id="screenshots_wrapper" class="w-100">
         <h3 class="text-center">Screenshots</h3>
-        <div>
-            <canvas width="100px" height="100px"></canvas>
-            <div>Download</div>
-        </div>
     </div>
-
-
 
     <script>
         const video = document.querySelector('video');
@@ -89,18 +80,18 @@
 
         function snap() {
             const download_link = document.createElement('a');
-            download_link.innerText = "Download";
-
             const wrapper = document.createElement('div');
             const blink = document.createElement('div');
-            blink.appendChild(download_link);
-
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
 
             canvas.width = w;
             canvas.height = h;
 
+            download_link.innerText = "Download";
+            blink.appendChild(download_link);
+
+   
             context.fillRect(0, 0, w, h);
             context.drawImage(video, 0, 0, w, h);
 
